@@ -82,7 +82,7 @@ public class TablePanel {
         context.setTableSorter(tableSorter);
 
         requestTable.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting() && !context.isEditingCheckbox()) {
+            if (!e.getValueIsAdjusting() && !context.isEditingCheckbox() && !context.isFiltering()) {
                 displaySelectedRequestCallback.run();
             }
         });

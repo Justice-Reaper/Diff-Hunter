@@ -229,6 +229,7 @@ public class DiffHunter implements BurpExtension {
         boolean useRegex = context.getTableFilterRegex().isSelected();
         boolean negative = context.getTableFilterNegative().isSelected();
 
+        context.setFiltering(true);
         try {
             Pattern pattern = null;
             if (!filterText.isEmpty()) {
@@ -279,6 +280,8 @@ public class DiffHunter implements BurpExtension {
             context.getTableFilterField().setBackground(context.getColorBackground());
         } catch (Exception e) {
             context.getTableFilterField().setBackground(Constants.COLOR_SEARCH_ERROR);
+        } finally {
+            context.setFiltering(false);
         }
     }
 

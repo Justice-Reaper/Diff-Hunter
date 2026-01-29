@@ -6,7 +6,7 @@
 
     <groupId>org.diffhunter</groupId>
     <artifactId>diff-hunter</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
     <name>Diff Hunter</name>
     <description>Burp Suite extension for comparing HTTP request/response differences</description>
 

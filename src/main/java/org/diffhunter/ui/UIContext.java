@@ -58,6 +58,7 @@ public class UIContext {
     private boolean filterResponses = true;
     private volatile boolean updatingCombos = false;
     private volatile boolean editingCheckbox = false;
+    private volatile boolean filtering = false;
 
     private final List<HttpLogEntry> logEntries = new CopyOnWriteArrayList<>();
     private final Map<Integer, HttpLogEntry> logEntriesMap = new ConcurrentHashMap<>();
@@ -281,6 +282,12 @@ public class UIContext {
 
     /** Sets the flag indicating a checkbox is currently being edited. */
     public void setEditingCheckbox(boolean editingCheckbox) { this.editingCheckbox = editingCheckbox; }
+
+    /** Returns true if a filter is being applied. */
+    public boolean isFiltering() { return filtering; }
+
+    /** Sets the flag indicating a filter is being applied. */
+    public void setFiltering(boolean filtering) { this.filtering = filtering; }
 
     /** Returns the list of all HTTP log entries. */
     public List<HttpLogEntry> getLogEntries() { return logEntries; }
