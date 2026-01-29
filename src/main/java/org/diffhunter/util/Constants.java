@@ -12,7 +12,7 @@ public final class Constants {
     private Constants() {}
 
     public static final String EXTENSION_NAME = "Diff Hunter";
-    public static final String EXTENSION_VERSION = "1.0";
+    public static final String EXTENSION_VERSION = "1.1";
     public static final String AUTHOR = "Sergio Aledo Bernal";
     public static final String EMAIL = "justice.reaper.io@gmail.com";
     public static final String LINKTREE = "https://linktr.ee/Justice_Reaper";
