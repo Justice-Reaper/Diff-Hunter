@@ -8,7 +8,7 @@ Diff Hunter allows you to mark any HTTP request as a "target" and compare it aga
 
 ## Preview
 
-![](/images/apreview.png)
+![](/images/preview.png)
 
 ## Features
 
