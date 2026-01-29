@@ -30,6 +30,7 @@ public class DiffHunter implements BurpExtension {
     private MontoyaApi api;
     private final UIContext context = new UIContext();
     private PropertyChangeListener themeChangeListener;
+    private HttpCaptureHandler httpHandler;
 
     @Override
     public void initialize(MontoyaApi api) {
@@ -40,7 +41,7 @@ public class DiffHunter implements BurpExtension {
 
         api.extension().setName(Constants.EXTENSION_NAME);
 
-        HttpCaptureHandler httpHandler = new HttpCaptureHandler(api, context);
+        httpHandler = new HttpCaptureHandler(api, context);
         api.http().registerHttpHandler(httpHandler);
 
         themeChangeListener = this::onLookAndFeelChanged;
@@ -54,9 +55,11 @@ public class DiffHunter implements BurpExtension {
 
             javax.swing.Timer batchUpdateTimer = new javax.swing.Timer(
                     Constants.BATCH_UPDATE_INTERVAL_MS, e -> {
-                        if (!context.isExtensionUnloading()) {
-                            processPendingEntries();
+                        if (context.isExtensionUnloading()) {
+                            ((javax.swing.Timer) e.getSource()).stop();
+                            return;
                         }
+                        processPendingEntries();
                     });
             batchUpdateTimer.start();
             context.setBatchUpdateTimer(batchUpdateTimer);
@@ -404,9 +407,9 @@ public class DiffHunter implements BurpExtension {
         String currentEndpoint = (String) context.getEndpointFilterCombo().getSelectedItem();
 
         if (currentHost == null || currentEndpoint == null) {
-            context.setCurrentTargetEntry(null);
-            clearAllDifferenceMarks();
-        } else if (wasEmpty) {
+            selectEndpointInTable();
+        } else if (wasEmpty || context.getCurrentTargetEntry() == null ||
+                   !context.getTargetEntries().containsKey(context.getCurrentTargetEntry().getNumber())) {
             selectEndpointInTable();
         }
     }
@@ -474,11 +477,19 @@ public class DiffHunter implements BurpExtension {
         List<DiffSegment> respDiffs = new ArrayList<>();
 
         Thread requestThread = new Thread(() -> {
-            reqDiffs.addAll(calculator.findDifferences(targetRequestText, selectedRequestText));
+            try {
+                reqDiffs.addAll(calculator.findDifferences(targetRequestText, selectedRequestText));
+            } catch (Exception e) {
+                api.logging().logToError("[DiffHunter] Error calculating request diffs: " + e.getMessage());
+            }
         });
 
         Thread responseThread = new Thread(() -> {
-            respDiffs.addAll(calculator.findDifferences(targetResponseText, selectedResponseText));
+            try {
+                respDiffs.addAll(calculator.findDifferences(targetResponseText, selectedResponseText));
+            } catch (Exception e) {
+                api.logging().logToError("[DiffHunter] Error calculating response diffs: " + e.getMessage());
+            }
         });
 
         requestThread.start();
@@ -767,8 +778,8 @@ public class DiffHunter implements BurpExtension {
                 continue;
             }
 
-            if (context.getCurrentSelectedEntry() != null &&
-                entry.getNumber() == context.getCurrentSelectedEntry().getNumber()) {
+            HttpLogEntry selected = context.getCurrentSelectedEntry();
+            if (selected != null && entry.getNumber() == selected.getNumber()) {
                 continue;
             }
 
@@ -780,6 +791,7 @@ public class DiffHunter implements BurpExtension {
                 synchronized (context.getWriteLock()) {
                     context.getLogEntries().remove(entry);
                     context.getLogEntriesMap().remove(entry.getNumber());
+                    context.getPendingEntries().remove(entry);
                 }
 
                 for (int row = 0; row < context.getTableModel().getRowCount(); row++) {
@@ -863,6 +875,10 @@ public class DiffHunter implements BurpExtension {
 
         if (context.getBatchUpdateTimer() != null) {
             context.getBatchUpdateTimer().stop();
+        }
+
+        if (httpHandler != null) {
+            httpHandler.cleanup();
         }
 
         UIManager.removePropertyChangeListener(themeChangeListener);

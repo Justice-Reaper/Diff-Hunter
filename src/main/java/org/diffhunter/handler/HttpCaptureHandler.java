@@ -117,4 +117,11 @@ public class HttpCaptureHandler implements HttpHandler {
 
         return ResponseReceivedAction.continueWith(responseReceived);
     }
+
+    /**
+     * Clears all tracked request start times. Called during extension unload.
+     */
+    public void cleanup() {
+        requestStartTimes.clear();
+    }
 }
