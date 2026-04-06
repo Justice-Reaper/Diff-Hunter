@@ -3,7 +3,6 @@ package org.diffhunter.model;
 import burp.api.montoya.http.HttpService;
 import burp.api.montoya.http.message.HttpRequestResponse;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 /**
@@ -117,11 +116,6 @@ public class HttpLogEntry {
         return httpRequestResponse.request().httpService();
     }
 
-    /** Returns the underlying HttpRequestResponse object. */
-    public HttpRequestResponse getHttpRequestResponse() {
-        return httpRequestResponse;
-    }
-
     /** Returns true if this entry is marked as a target. */
     public boolean isMarked() { return marked; }
 
@@ -133,9 +127,6 @@ public class HttpLogEntry {
 
     /** Sets the row difference type for table coloring. */
     public void setRowDiffType(RowDiffType rowDiffType) { this.rowDiffType = rowDiffType; }
-
-    /** Returns true if this entry has any differences from the target. */
-    public boolean isMarkedAsDifferent() { return rowDiffType != RowDiffType.NONE; }
 
     /** Returns the full endpoint (path + query string). */
     public String getEndpoint() {

@@ -40,20 +40,6 @@ public class TargetExclusions {
     }
 
     /**
-     * Removes a request exclusion rule.
-     */
-    public void removeRequestExclusion(ExclusionRule rule) {
-        requestExclusions.remove(rule);
-    }
-
-    /**
-     * Removes a response exclusion rule.
-     */
-    public void removeResponseExclusion(ExclusionRule rule) {
-        responseExclusions.remove(rule);
-    }
-
-    /**
      * Checks if the given text matches any enabled request exclusion.
      */
     public boolean matchesRequestExclusion(String text) {

@@ -1,11 +1,12 @@
 package org.diffhunter.handler;
 
+import org.diffhunter.model.HttpLogEntry;
+import org.diffhunter.ui.UIContext;
+
 import burp.api.montoya.MontoyaApi;
 import burp.api.montoya.http.handler.*;
 import burp.api.montoya.http.message.HttpRequestResponse;
 import burp.api.montoya.http.message.requests.HttpRequest;
-import org.diffhunter.model.HttpLogEntry;
-import org.diffhunter.ui.UIContext;
 
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;

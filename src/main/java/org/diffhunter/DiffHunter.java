@@ -1,7 +1,5 @@
 package org.diffhunter;
 
-import burp.api.montoya.BurpExtension;
-import burp.api.montoya.MontoyaApi;
 import org.diffhunter.diff.DiffCalculator;
 import org.diffhunter.diff.DiffHighlighter;
 import org.diffhunter.diff.HexDumpConverter;
@@ -12,6 +10,9 @@ import org.diffhunter.model.RowDiffType;
 import org.diffhunter.model.TargetExclusions;
 import org.diffhunter.ui.*;
 import org.diffhunter.util.Constants;
+
+import burp.api.montoya.BurpExtension;
+import burp.api.montoya.MontoyaApi;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -33,6 +34,7 @@ public class DiffHunter implements BurpExtension {
     private PropertyChangeListener themeChangeListener;
     private HttpCaptureHandler httpHandler;
     private MatchPanel matchPanel;
+    private int originalTooltipDelay;
 
     @Override
     public void initialize(MontoyaApi api) {
@@ -41,6 +43,7 @@ public class DiffHunter implements BurpExtension {
 
         initializeTheme();
 
+        originalTooltipDelay = ToolTipManager.sharedInstance().getInitialDelay();
         ToolTipManager.sharedInstance().setInitialDelay(1000);
 
         api.extension().setName(Constants.EXTENSION_NAME);
@@ -655,7 +658,7 @@ public class DiffHunter implements BurpExtension {
         String targetResponseText = getResponseText(context.getCurrentTargetEntry());
 
         applyHighlightingToEditorsWithTexts(selectedRequestText, selectedResponseText,
-                targetRequestText, targetResponseText, true);
+                targetRequestText, targetResponseText);
     }
 
     /**
@@ -665,26 +668,7 @@ public class DiffHunter implements BurpExtension {
      */
     private void applyHighlightingToEditorsWithTexts(String selectedRequestText, String selectedResponseText,
                                                       String targetRequestText, String targetResponseText) {
-        applyHighlightingToEditorsWithTexts(selectedRequestText, selectedResponseText,
-                targetRequestText, targetResponseText, false);
-    }
-
-    /**
-     * Applies highlighting to editors with the provided texts.
-     * When preserveScroll is true, saves and restores scroll positions (used for re-highlighting).
-     * When preserveScroll is false, allows scroll to reset to top (used for new content).
-     */
-    private void applyHighlightingToEditorsWithTexts(String selectedRequestText, String selectedResponseText,
-                                                      String targetRequestText, String targetResponseText,
-                                                      boolean preserveScroll) {
         DiffHighlighter highlighter = context.getDiffHighlighter();
-        Map<JTextPane, Point> scrollPositions = new HashMap<>();
-        if (preserveScroll) {
-            highlighter.saveScrollPosition(context.getRequestPane(), scrollPositions);
-            highlighter.saveScrollPosition(context.getResponsePane(), scrollPositions);
-            highlighter.saveScrollPosition(context.getRequestPaneEndpoint(), scrollPositions);
-            highlighter.saveScrollPosition(context.getResponsePaneEndpoint(), scrollPositions);
-        }
 
         boolean isDark = context.isDarkTheme();
         boolean charLevelDiff = context.isCharacterLevelDiff();
@@ -770,9 +754,6 @@ public class DiffHunter implements BurpExtension {
                     context.getResponseTargetDiffs(), context.getResponseTargetDiffSelection(), isDark);
         }
 
-        if (preserveScroll) {
-            highlighter.restoreScrollPositions(scrollPositions);
-        }
     }
 
     /**
@@ -1182,6 +1163,7 @@ public class DiffHunter implements BurpExtension {
      * Cleans up resources when the extension is unloaded.
      */
     private void cleanupResources() {
+        ToolTipManager.sharedInstance().setInitialDelay(originalTooltipDelay);
         context.setExtensionUnloading(true);
         context.getHighlightingVersion().incrementAndGet();
 

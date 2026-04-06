@@ -1,12 +1,13 @@
 package org.diffhunter.diff;
 
-import com.github.difflib.DiffUtils;
-import com.github.difflib.patch.AbstractDelta;
-import com.github.difflib.patch.Patch;
 import org.diffhunter.model.DiffSegment;
 import org.diffhunter.model.DiffType;
 import org.diffhunter.model.HttpLogEntry;
 import org.diffhunter.model.RowDiffType;
+
+import com.github.difflib.DiffUtils;
+import com.github.difflib.patch.AbstractDelta;
+import com.github.difflib.patch.Patch;
 
 import burp.api.montoya.MontoyaApi;
 

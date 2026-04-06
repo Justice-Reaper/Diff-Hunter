@@ -1,8 +1,9 @@
 package org.diffhunter.ui;
 
+import org.diffhunter.model.HttpLogEntry;
+
 import burp.api.montoya.core.ByteArray;
 import burp.api.montoya.http.message.requests.HttpRequest;
-import org.diffhunter.model.HttpLogEntry;
 
 import javax.swing.*;
 import java.awt.*;
@@ -89,6 +90,7 @@ public class EditorsPanel {
     private JTextPane createTextPane(Supplier<HttpLogEntry> entrySupplier, boolean isRequest) {
         JTextPane textPane = new JTextPane();
         textPane.setEditable(false);
+        ((javax.swing.text.DefaultCaret) textPane.getCaret()).setUpdatePolicy(javax.swing.text.DefaultCaret.NEVER_UPDATE);
         textPane.setFont(context.getEditorFont());
         textPane.setOpaque(true);
         textPane.setBackground(context.getColorBackground());
@@ -123,16 +125,18 @@ public class EditorsPanel {
     private JPopupMenu createContextMenu(Supplier<HttpLogEntry> entrySupplier, boolean isRequest) {
         JPopupMenu menu = new JPopupMenu();
 
-        JMenuItem sendToRepeater = new JMenuItem("Send to Repeater");
-        sendToRepeater.addActionListener(e -> sendToTool(entrySupplier, "repeater", isRequest));
-        menu.add(sendToRepeater);
+        if (isRequest) {
+            JMenuItem sendToRepeater = new JMenuItem("Send to Repeater");
+            sendToRepeater.addActionListener(e -> sendToTool(entrySupplier, "repeater"));
+            menu.add(sendToRepeater);
 
-        JMenuItem sendToIntruder = new JMenuItem("Send to Intruder");
-        sendToIntruder.addActionListener(e -> sendToTool(entrySupplier, "intruder", isRequest));
-        menu.add(sendToIntruder);
+            JMenuItem sendToIntruder = new JMenuItem("Send to Intruder");
+            sendToIntruder.addActionListener(e -> sendToTool(entrySupplier, "intruder"));
+            menu.add(sendToIntruder);
+        }
 
         JMenuItem sendToComparer = new JMenuItem("Send to Comparer");
-        sendToComparer.addActionListener(e -> sendToTool(entrySupplier, "comparer", isRequest));
+        sendToComparer.addActionListener(e -> sendToComparer(entrySupplier, isRequest));
         menu.add(sendToComparer);
 
         if (context.getApi() != null) {
@@ -143,10 +147,7 @@ public class EditorsPanel {
         return menu;
     }
 
-    /**
-     * Sends the current request or response to the specified Burp tool.
-     */
-    private void sendToTool(Supplier<HttpLogEntry> entrySupplier, String tool, boolean isRequest) {
+    private void sendToTool(Supplier<HttpLogEntry> entrySupplier, String tool) {
         HttpLogEntry entry = entrySupplier.get();
         if (entry == null || context.getApi() == null) {
             return;
@@ -162,13 +163,23 @@ public class EditorsPanel {
                 case "intruder":
                     context.getApi().intruder().sendToIntruder(request);
                     break;
-                case "comparer":
-                    byte[] dataToSend = isRequest ? entry.getRequestBytes() : entry.getResponseBytes();
-                    context.getApi().comparer().sendToComparer(ByteArray.byteArray(dataToSend));
-                    break;
             }
         } catch (Exception ex) {
             context.getApi().logging().logToError("Error sending to " + tool + ": " + ex.getMessage());
+        }
+    }
+
+    private void sendToComparer(Supplier<HttpLogEntry> entrySupplier, boolean isRequest) {
+        HttpLogEntry entry = entrySupplier.get();
+        if (entry == null || context.getApi() == null) {
+            return;
+        }
+
+        try {
+            byte[] data = isRequest ? entry.getRequestBytes() : entry.getResponseBytes();
+            context.getApi().comparer().sendToComparer(ByteArray.byteArray(data));
+        } catch (Exception ex) {
+            context.getApi().logging().logToError("Error sending to comparer: " + ex.getMessage());
         }
     }
 }

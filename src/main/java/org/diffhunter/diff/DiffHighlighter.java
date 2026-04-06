@@ -1,9 +1,10 @@
 package org.diffhunter.diff;
 
-import burp.api.montoya.MontoyaApi;
 import org.diffhunter.model.DiffSegment;
 import org.diffhunter.model.DiffType;
 import org.diffhunter.util.Constants;
+
+import burp.api.montoya.MontoyaApi;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -150,32 +151,4 @@ public class DiffHighlighter {
         });
     }
 
-    /**
-     * Saves scroll position of a JTextPane.
-     */
-    public void saveScrollPosition(JTextPane pane, Map<JTextPane, Point> positions) {
-        if (pane == null) return;
-        Container parent = pane.getParent();
-        if (parent instanceof JViewport) {
-            positions.put(pane, ((JViewport) parent).getViewPosition());
-        }
-    }
-
-    /**
-     * Restores saved scroll positions.
-     */
-    public void restoreScrollPositions(Map<JTextPane, Point> positions) {
-        SwingUtilities.invokeLater(() -> {
-            for (Map.Entry<JTextPane, Point> entry : positions.entrySet()) {
-                JTextPane pane = entry.getKey();
-                Point pos = entry.getValue();
-                if (pane != null && pos != null) {
-                    Container parent = pane.getParent();
-                    if (parent instanceof JViewport) {
-                        ((JViewport) parent).setViewPosition(pos);
-                    }
-                }
-            }
-        });
-    }
 }

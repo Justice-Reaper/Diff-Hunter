@@ -119,13 +119,10 @@ The JTextPanes are the panels where differences between the selected request and
 
 #### Context Menu
 
-Right-click inside the JTextPane to access a context menu that allows sending the request or response to:
+Right-click inside the JTextPane to access a context menu:
 
-- Repeater
-
-- Intruder
-
-- Comparer
+- **Request tab**: Send to Repeater, Intruder, or Comparer
+- **Response tab**: Send to Comparer
 
 #### Search Bar
 

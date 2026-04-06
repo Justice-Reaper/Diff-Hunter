@@ -354,8 +354,8 @@ public class SearchBar extends JPanel {
                     boolean isCurrent = (i == currentIdx);
 
                     try {
-                        Rectangle r0 = pane.modelToView(pos[0]);
-                        Rectangle r1 = pane.modelToView(pos[1]);
+                        Rectangle r0 = pane.modelToView2D(pos[0]).getBounds();
+                        Rectangle r1 = pane.modelToView2D(pos[1]).getBounds();
 
                         if (r0 == null || r1 == null) continue;
 
