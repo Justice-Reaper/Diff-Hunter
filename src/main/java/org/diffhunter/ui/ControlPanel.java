@@ -53,16 +53,28 @@ public class ControlPanel {
      */
     private void addFilterSection(JPanel panel) {
         JCheckBox tableFilterCaseSensitive = new JCheckBox("Case Sensitive");
-        tableFilterCaseSensitive.addActionListener(e -> applyTableFilterCallback.run());
+        tableFilterCaseSensitive.addActionListener(e -> {
+            if (context.getTableFilterField().getText().isEmpty()) {
+                applyTableFilterCallback.run();
+            }
+        });
         context.setTableFilterCaseSensitive(tableFilterCaseSensitive);
 
         JCheckBox tableFilterRegex = new JCheckBox("Regex");
-        tableFilterRegex.addActionListener(e -> applyTableFilterCallback.run());
+        tableFilterRegex.addActionListener(e -> {
+            if (context.getTableFilterField().getText().isEmpty()) {
+                applyTableFilterCallback.run();
+            }
+        });
         context.setTableFilterRegex(tableFilterRegex);
 
         JCheckBox tableFilterNegative = new JCheckBox("Negative Search");
         tableFilterNegative.setToolTipText("Show requests that do NOT match");
-        tableFilterNegative.addActionListener(e -> applyTableFilterCallback.run());
+        tableFilterNegative.addActionListener(e -> {
+            if (context.getTableFilterField().getText().isEmpty()) {
+                applyTableFilterCallback.run();
+            }
+        });
         context.setTableFilterNegative(tableFilterNegative);
 
         JButton gearButton = new JButton("⚙");
@@ -75,13 +87,17 @@ public class ControlPanel {
 
         JTextField tableFilterField = new JTextField(60);
         tableFilterField.setToolTipText("Filter by request and response content. Press Enter to apply.");
-        tableFilterField.addActionListener(e -> applyTableFilterCallback.run());
+        tableFilterField.addActionListener(e -> {
+            context.setCommittedFilterText(tableFilterField.getText());
+            applyTableFilterCallback.run();
+        });
         tableFilterField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {}
             @Override
             public void removeUpdate(DocumentEvent e) {
                 if (tableFilterField.getText().isEmpty()) {
+                    context.setCommittedFilterText("");
                     applyTableFilterCallback.run();
                 }
             }
@@ -266,11 +282,15 @@ public class ControlPanel {
 
         filterRequestsItem.addActionListener(e -> {
             context.setFilterRequests(filterRequestsItem.isSelected());
-            applyTableFilterCallback.run();
+            if (context.getTableFilterField().getText().isEmpty()) {
+                applyTableFilterCallback.run();
+            }
         });
         filterResponsesItem.addActionListener(e -> {
             context.setFilterResponses(filterResponsesItem.isSelected());
-            applyTableFilterCallback.run();
+            if (context.getTableFilterField().getText().isEmpty()) {
+                applyTableFilterCallback.run();
+            }
         });
 
         filterPopup.add(filterRequestsItem);
@@ -280,14 +300,18 @@ public class ControlPanel {
         StayOpenCheckBoxMenuItem caseSensitiveItem = new StayOpenCheckBoxMenuItem("Case Sensitive");
         caseSensitiveItem.addActionListener(e -> {
             caseSensitive.setSelected(caseSensitiveItem.isSelected());
-            applyTableFilterCallback.run();
+            if (context.getTableFilterField().getText().isEmpty()) {
+                applyTableFilterCallback.run();
+            }
         });
         filterPopup.add(caseSensitiveItem);
 
         StayOpenCheckBoxMenuItem regexItem = new StayOpenCheckBoxMenuItem("Regex");
         regexItem.addActionListener(e -> {
             regex.setSelected(regexItem.isSelected());
-            applyTableFilterCallback.run();
+            if (context.getTableFilterField().getText().isEmpty()) {
+                applyTableFilterCallback.run();
+            }
         });
         filterPopup.add(regexItem);
 
@@ -295,7 +319,9 @@ public class ControlPanel {
         negativeItem.setToolTipText("Show requests that do NOT match");
         negativeItem.addActionListener(e -> {
             negative.setSelected(negativeItem.isSelected());
-            applyTableFilterCallback.run();
+            if (context.getTableFilterField().getText().isEmpty()) {
+                applyTableFilterCallback.run();
+            }
         });
         filterPopup.add(negativeItem);
 
@@ -304,28 +330,36 @@ public class ControlPanel {
         StayOpenCheckBoxMenuItem requestDiffItem = new StayOpenCheckBoxMenuItem("Request Differences Only", true);
         requestDiffItem.addActionListener(e -> {
             context.setShowRequestDiff(requestDiffItem.isSelected());
-            applyTableFilterCallback.run();
+            if (context.getTableFilterField().getText().isEmpty()) {
+                applyTableFilterCallback.run();
+            }
         });
         filterPopup.add(requestDiffItem);
 
         StayOpenCheckBoxMenuItem responseDiffItem = new StayOpenCheckBoxMenuItem("Response Differences Only", true);
         responseDiffItem.addActionListener(e -> {
             context.setShowResponseDiff(responseDiffItem.isSelected());
-            applyTableFilterCallback.run();
+            if (context.getTableFilterField().getText().isEmpty()) {
+                applyTableFilterCallback.run();
+            }
         });
         filterPopup.add(responseDiffItem);
 
         StayOpenCheckBoxMenuItem bothDiffItem = new StayOpenCheckBoxMenuItem("Request And Response Differences Only", true);
         bothDiffItem.addActionListener(e -> {
             context.setShowBothDiff(bothDiffItem.isSelected());
-            applyTableFilterCallback.run();
+            if (context.getTableFilterField().getText().isEmpty()) {
+                applyTableFilterCallback.run();
+            }
         });
         filterPopup.add(bothDiffItem);
 
         StayOpenCheckBoxMenuItem noDiffItem = new StayOpenCheckBoxMenuItem("No Differences", true);
         noDiffItem.addActionListener(e -> {
             context.setShowNoDiff(noDiffItem.isSelected());
-            applyTableFilterCallback.run();
+            if (context.getTableFilterField().getText().isEmpty()) {
+                applyTableFilterCallback.run();
+            }
         });
         filterPopup.add(noDiffItem);
 

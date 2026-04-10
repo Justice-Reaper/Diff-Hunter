@@ -147,6 +147,7 @@ public class EditorsPanel {
         return menu;
     }
 
+    /** Sends the current request to the specified Burp tool (Repeater or Intruder). */
     private void sendToTool(Supplier<HttpLogEntry> entrySupplier, String tool) {
         HttpLogEntry entry = entrySupplier.get();
         if (entry == null || context.getApi() == null) {
@@ -169,6 +170,7 @@ public class EditorsPanel {
         }
     }
 
+    /** Sends the current request or response data to Burp Comparer. */
     private void sendToComparer(Supplier<HttpLogEntry> entrySupplier, boolean isRequest) {
         HttpLogEntry entry = entrySupplier.get();
         if (entry == null || context.getApi() == null) {

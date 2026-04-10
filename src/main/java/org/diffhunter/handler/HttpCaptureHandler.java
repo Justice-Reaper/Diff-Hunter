@@ -86,7 +86,6 @@ public class HttpCaptureHandler implements HttpHandler {
                 responseTime = System.currentTimeMillis() - startTime;
             }
 
-            // Create HttpRequestResponse and copy to temp file to minimize memory usage
             HttpRequestResponse httpRequestResponse = HttpRequestResponse
                     .httpRequestResponse(request, responseReceived)
                     .copyToTempFile();

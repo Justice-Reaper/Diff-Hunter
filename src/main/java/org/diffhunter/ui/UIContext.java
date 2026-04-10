@@ -42,6 +42,7 @@ public class UIContext {
     private JTextPane responsePaneEndpoint;
 
     private JTextField tableFilterField;
+    private String committedFilterText = "";
     private JCheckBox tableFilterCaseSensitive;
     private JCheckBox tableFilterRegex;
     private JCheckBox tableFilterNegative;
@@ -209,6 +210,12 @@ public class UIContext {
 
     /** Sets the table filter text field. */
     public void setTableFilterField(JTextField tableFilterField) { this.tableFilterField = tableFilterField; }
+
+    /** Returns the committed filter text, confirmed by pressing Enter. */
+    public String getCommittedFilterText() { return committedFilterText; }
+
+    /** Sets the committed filter text. */
+    public void setCommittedFilterText(String committedFilterText) { this.committedFilterText = committedFilterText; }
 
     /** Returns the case sensitive filter checkbox. */
     public JCheckBox getTableFilterCaseSensitive() { return tableFilterCaseSensitive; }

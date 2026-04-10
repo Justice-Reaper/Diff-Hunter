@@ -20,6 +20,7 @@ public class ExclusionsPanel {
     private DefaultTableModel requestTableModel;
     private DefaultTableModel responseTableModel;
 
+    /** Creates a new ExclusionsPanel with the specified context. */
     public ExclusionsPanel(UIContext context) {
         this.context = context;
     }

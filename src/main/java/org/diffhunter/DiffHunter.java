@@ -36,6 +36,7 @@ public class DiffHunter implements BurpExtension {
     private MatchPanel matchPanel;
     private int originalTooltipDelay;
 
+    /** Entry point for the Burp Suite extension. Initializes UI, handlers, and listeners. */
     @Override
     public void initialize(MontoyaApi api) {
         this.api = api;
@@ -233,7 +234,7 @@ public class DiffHunter implements BurpExtension {
      * Applies the current filter to the request table.
      */
     private void applyTableFilter() {
-        String filterText = context.getTableFilterField().getText();
+        String filterText = context.getCommittedFilterText();
         boolean caseSensitive = context.getTableFilterCaseSensitive().isSelected();
         boolean useRegex = context.getTableFilterRegex().isSelected();
         boolean negative = context.getTableFilterNegative().isSelected();
@@ -322,6 +323,7 @@ public class DiffHunter implements BurpExtension {
         return true;
     }
 
+    /** Checks if text contains the filter string, with optional case sensitivity. */
     private boolean containsLiteral(String text, String filter, boolean caseSensitive) {
         return caseSensitive ? text.contains(filter) : text.toLowerCase().contains(filter);
     }

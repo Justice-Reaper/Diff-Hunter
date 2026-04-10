@@ -84,7 +84,7 @@ Allows the user to set the maximum number of requests stored in memory. Older re
 
 ### Filter Options
 
-Type in the filter field and press **Enter** to apply the filter. Clearing the field automatically removes the filter. Additional filter options are accessible via the gear button (⚙):
+Type in the filter field and press **Enter** to apply the filter. Clearing the field automatically removes the filter. Additional filter options are accessible via the gear button (⚙). Toggling any checkbox applies immediately using the last confirmed filter text (confirmed by pressing Enter). If no text has been confirmed, the checkboxes apply over the unfiltered table:
 
 #### Search Filters
 
